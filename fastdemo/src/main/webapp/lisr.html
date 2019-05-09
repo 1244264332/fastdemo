@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="echarts-all.js"></script>
+    <script src="js/jquery-1.7.js"></script>
+
+<style>
+    　　　　
+    #div{
+        text-align: center;
+        margin: 0 auto;
+    }
+    table{
+        /* border:1px solid red; */
+        margin: 0 auto;
+        width: 600px;
+        /* height: 1000px; */
+        border-collapse: collapse;
+        display: none;
+    }
+    table tr,th{
+        width: 600px;
+        height: 30px;
+    }
+    table td{
+        background:rgb(173, 204, 233);
+    }
+    table th{
+        background:rgb(55, 146, 231);
+    }
+    table tr ,td,th{
+        border: 1px  solid rgb(21, 123, 219);
+    }
+</style>
+
+</head>
+<body>
+<div id='div'>
+    <h2>天气预报</h2>
+    <p>
+        <b>请输入要查询的城市：</b><input type='text' name='area' id='area'>
+        <input type="button" id='btn' value="查询">
+    </p>
+    <table id="tab">
+    </table>
+</div>
+<script>
+    $(function(){
+        $("#btn").click(function(){
+            var value=$("#area").val();//获取用户输入input标签里要查询的城市名称
+            $.ajax({
+                url: "./weather.php",//url地址指向
+                data:{//用户传入的数据
+                    area:value
+                },
+                dataType:'map',//数据类型为json
+                success:function(area){//请求成功后的函数
+                    var weather=area.result[0].future;
+                    var length=weather.length;
+                    var a="<tr ><th>时间</th><th>星期</th><th>白天</th><th>晚上</th><th>气温</th><th>风向</th></tr>";
+                    for(var i=0;i<length;i++){
+
+                        a+="<tr><td>"+weather[i].area+"</td><td>"+weather[i].night_wind_direction+"</td><td>"+weather[i].night_air_temperature+"</td><td>"+weather[i].night+"</td><td>"+weather[i].temperature+"</td><td>"+weather[i].wind+"</td> </tr>";
+                    }
+                    document.getElementById('tab').innerHTML=a;
+                    tab.style.display="block";
+                }
+            })
+        });
+    });
+
+</script>
+</body>
+</html>

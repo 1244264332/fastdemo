@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="echarts-all.js"></script>
+    <script src="js/jquery-1.7.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 2000px;height: 600px">
+
+    </div>
+</body>
+<script>
+    $.post(
+        "getColumn",
+        function (data) {
+            var arr = data.arr;
+            var maxArr = data.maxArr;
+            var avgArr = data.avgArr;
+            var minArr = data.minArr;
+
+            var myChart = echarts.init(document.getElementById('main'));
+            var option = {
+                title : {
+                    text: '工资图表',
+                    subtext: 'Go Back',
+                    sublink: 'http://localhost/list'
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    },
+                    formatter: function (params){
+                        return params[0].name + '<br/>'
+                            + params[0].seriesName + ' : ' + params[0].value + '<br/>'
+                            + params[1].seriesName + ' : ' + (params[1].value + params[0].value);
+                    }
+                },
+                legend: {
+                    selectedMode:false,
+                    data:['最高工资', '平均工资','最低工资']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : arr
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        boundaryGap: [0, 0.1]
+                    }
+                ],
+                series : [
+                    {
+                        name:'最高工资',
+                        type:'bar',
+                        stack: 'sum',
+                        barCategoryGap: '50%',
+                        itemStyle: {
+                            normal: {
+                                color: 'tomato',
+                                barBorderColor: 'tomato',
+                                barBorderWidth: 6,
+                                barBorderRadius:0,
+                                label : {
+                                    show: true, position: 'insideTop'
+                                }
+                            }
+                        },
+                        data:maxArr
+                    },
+                    {
+                        name:'平均工资',
+                        type:'bar',
+                        stack: 'sum',
+                        itemStyle: {
+                            normal: {
+                                color: '#fff',
+                                barBorderColor: 'tomato',
+                                barBorderWidth: 6,
+                                barBorderRadius:0,
+                                label : {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: function (params) {
+                                        for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+                                            if (option.xAxis[0].data[i] == params.name) {
+                                                return option.series[0].data[i] + params.value;
+                                            }
+                                        }
+                                    },
+                                    textStyle: {
+                                        color: 'tomato'
+                                    }
+                                }
+                            }
+                        },
+                        data:avgArr
+                    },
+                    {
+                        name:'最低工资',
+                        type:'bar',
+                        stack: 'sum',
+                        itemStyle: {
+                            normal: {
+                                color: '#fff',
+                                barBorderColor: 'tomato',
+                                barBorderWidth: 6,
+                                barBorderRadius:0,
+                                label : {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: function (params) {
+                                        for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+                                            if (option.xAxis[0].data[i] == params.name) {
+                                                return option.series[0].data[i] + params.value;
+                                            }
+                                        }
+                                    },
+                                    textStyle: {
+                                        color: 'tomato'
+                                    }
+                                }
+                            }
+                        },
+                        data:minArr
+                    }
+                ]
+            };
+            myChart.setOption(option);
+         }
+        );
+
+
+
+
+</script>
+</html>
